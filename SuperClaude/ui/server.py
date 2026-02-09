@@ -13,7 +13,10 @@ import threading
 from datetime import datetime
 import signal
 import requests
-from SimpleWebSocketServer import SimpleWebSocketServer, WebSocket
+try:
+    from SimpleWebSocketServer import SimpleWebSocketServer, WebSocket
+except ImportError:
+    from simple_websocket_server import WebSocketServer as SimpleWebSocketServer, WebSocket
 
 # Store active chat sessions
 chat_sessions = {}
@@ -43,8 +46,90 @@ AI_MODELS = {
         'name': 'HuggingFace',
         'provider': 'HuggingFace',
         'description': 'HuggingFace hosted models'
+    },
+    'localai': {
+        'name': 'LocalAI',
+        'provider': 'LocalAI',
+        'description': 'Local AI models via LocalAI'
+    },
+    'lmstudio': {
+        'name': 'LM Studio',
+        'provider': 'LM Studio',
+        'description': 'Local models via LM Studio'
+    },
+    'ollama': {
+        'name': 'Ollama',
+        'provider': 'Ollama',
+        'description': 'Local models via Ollama'
+    },
+    'ollama_cloud': {
+        'name': 'Ollama Cloud',
+        'provider': 'Ollama Cloud',
+        'description': 'Cloud models via Ollama Cloud'
     }
 }
+
+# Configuration
+LOCALAI_URL = os.getenv("LOCALAI_URL", "http://localhost:8080/v1")
+LMSTUDIO_URL = os.getenv("LMSTUDIO_URL", "http://localhost:1234/v1")
+OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434/api")
+OLLAMA_CLOUD_API_KEY = os.getenv("OLLAMA_CLOUD_API_KEY")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama2")
+LOCALAI_MODEL = os.getenv("LOCALAI_MODEL", "gpt-3.5-turbo")
+LMSTUDIO_MODEL = os.getenv("LMSTUDIO_MODEL", "local-model")
+
+def query_openai_compatible(prompt, base_url, model_name, api_key=None):
+    """Query OpenAI compatible API"""
+    headers = {"Content-Type": "application/json"}
+    if api_key:
+        headers["Authorization"] = f"Bearer {api_key}"
+
+    payload = {
+        "model": model_name,
+        "messages": [{"role": "user", "content": prompt}]
+    }
+
+    try:
+        url = f"{base_url.rstrip('/')}/chat/completions"
+        response = requests.post(url, headers=headers, json=payload)
+
+        if response.status_code == 200:
+            data = response.json()
+            if "choices" in data and len(data["choices"]) > 0:
+                return data["choices"][0]["message"]["content"]
+            else:
+                return f"Error: Unexpected response format from {base_url}"
+        else:
+            return f"Error: API returned status code {response.status_code}: {response.text}"
+    except Exception as e:
+        return f"Error connecting to {base_url}: {str(e)}"
+
+def query_ollama(prompt, base_url, model_name, api_key=None):
+    """Query Ollama API"""
+    headers = {"Content-Type": "application/json"}
+    if api_key:
+        headers["Authorization"] = f"Bearer {api_key}"
+
+    payload = {
+        "model": model_name,
+        "messages": [{"role": "user", "content": prompt}],
+        "stream": False
+    }
+
+    try:
+        url = f"{base_url.rstrip('/')}/chat"
+        response = requests.post(url, headers=headers, json=payload)
+
+        if response.status_code == 200:
+            data = response.json()
+            if "message" in data and "content" in data["message"]:
+                return data["message"]["content"]
+            else:
+                return f"Error: Unexpected response format from Ollama"
+        else:
+            return f"Error: Ollama returned status code {response.status_code}: {response.text}"
+    except Exception as e:
+        return f"Error connecting to Ollama: {str(e)}"
 
 def query_huggingface_model(prompt, model="gpt2"):
     """Query HuggingFace Inference API for a text generation model"""
@@ -127,6 +212,17 @@ class ChatWebSocket(WebSocket):
                             ai_response_text = query_huggingface_model(content)
                         except Exception as e:
                             ai_response_text = f"Error querying HuggingFace model: {str(e)}"
+                    elif session.model_id == 'localai':
+                        ai_response_text = query_openai_compatible(content, LOCALAI_URL, LOCALAI_MODEL)
+                    elif session.model_id == 'lmstudio':
+                        ai_response_text = query_openai_compatible(content, LMSTUDIO_URL, LMSTUDIO_MODEL)
+                    elif session.model_id == 'ollama':
+                        ai_response_text = query_ollama(content, OLLAMA_URL, OLLAMA_MODEL)
+                    elif session.model_id == 'ollama_cloud':
+                        if not OLLAMA_CLOUD_API_KEY:
+                            ai_response_text = "Error: OLLAMA_CLOUD_API_KEY not set"
+                        else:
+                            ai_response_text = query_ollama(content, "https://ollama.com/api", OLLAMA_MODEL, OLLAMA_CLOUD_API_KEY)
                     else:
                         # Simulate AI response for other models
                         ai_response_text = f"Response from {AI_MODELS[session.model_id]['name']}: " + content[::-1]
