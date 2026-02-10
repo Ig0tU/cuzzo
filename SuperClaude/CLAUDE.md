@@ -10,6 +10,8 @@
 @RULES.md 
 @MCP.md 
 @PERSONAS.md
+@PERSONAS_EXTENDED.md
+@WORKFLOWS.md
 
 ## Core Cfg
 
