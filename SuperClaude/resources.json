@@ -1,127 +1,253 @@
 {
+
 "system_id": "SOVEREIGN_ORCHESTRATOR_v3",
+
 "project_reference": "signalAgent",
+
 "base_url": "https://huggingface.co/datasets/",
+
 "matrix_database": {
+
 "H": {
+
 "cluster": "Code Intelligence Datasets",
+
 "nodes": {
+
 "H1": {
+
 "name": "Global Code Archives",
+
 "keyword": "/global-code",
+
 "links": [
+
 "Tigle/tigle-source-code",
+
 "bigcode/the-stack",
+
 "bigcode/starcoderdata",
+
 "NarsAI/google-code-archive",
+
 "OcasAI/google-code-archive",
+
 "Carrillo16/google-code-archive",
+
 "0xzanuee/google-code-archive",
+
 "nyuuzyou/google-code-archive",
+
 "nyuuzyou/ms-codeplex-archive"
+
 ],
+
 "persona": "Massive-scale, deduplicated multi-language repositories for base pre-training."
+
 },
+
 "H2": {
+
 "name": "Competitive Programming & Logic",
+
 "keyword": "/algorithmic-logic",
+
 "links": [
+
 "TheFactoryX/edition_2783_deepmind-code_contests-readymade",
+
 "TheFactoryX/edition_2744_deepmind-code_contests-readymade",
+
 "TheFactoryX/edition_2711_deepmind-code_contests-readymade",
+
 "SolverJ/codecontests",
+
 "bigcode/humanevalpack",
+
 "openai/gsm8k",
+
 "cublya/Code-Reasoning",
+
 "cublya/rStar-Coder",
+
 "isavita/advent-of-code"
+
 ],
+
 "persona": "High-complexity algorithmic sets focused on functional correctness and competition-level logic."
+
 },
+
 "H3": {
+
 "name": "Codex & Synthetic Thinking",
+
 "keyword": "/synthetic-codex",
+
 "links": [
+
 "Modotte/CodeX-2M-Thinking",
+
 "Modotte/CodeX-7M-Non-Thinking",
+
 "TeichAI/gpt-5.1-codex-max-1000x",
+
 "TeichAI/gpt-5-codex-250x",
+
 "nanowell/5.1-codex-max",
+
 "arcosoph/Arcosoph-Codex-Weaver-FC-Reasoning",
+
 "DCAgent2/nl2bash-gpt-5-codex-passed-strict"
+
 ],
+
 "persona": "Chain-of-thought (CoT) and high-reasoning synthetic data for advanced problem solving."
+
 },
+
 "H4": {
+
 "name": "SFT & Reward Logic",
+
 "keyword": "/instruction-code",
+
 "links": [
+
 "Sweaterdog/code_tasks_33k",
+
 "CodeGoat24/UnifiedReward-Flex-SFT-90K",
+
 "TeichAI/MiniMax-M2.1-Code-SFT",
+
 "drewli20200316/deepspeed-chat-rlhf-code",
+
 "autoprogrammer/code_r1_lf_v1",
+
 "O1-OPEN/OpenO1-SFT"
+
 ],
+
 "persona": "Supervised fine-tuning tasks and process-reward models for instruction following."
+
 },
+
 "H5": {
+
 "name": "System Operations & Debugging",
+
 "keyword": "/ops-debug",
+
 "links": [
+
 "zechen-nlp/long_code_debug",
+
 "chitanda/code-debug-outputs",
+
 "criyle/codenet-compile-errors",
+
 "DCAgent2/nl2bash-gpt-5-codex-traces",
+
 "Intelligent-Internet/swebench-pro-gpt-5-codex-ii-agent-trajectories",
+
 "DCAgent/tbench-easy-unofficial-codex-gpt5-trial1"
+
 ],
+
 "persona": "Trace logs, compile errors, and agent trajectories for system-level troubleshooting."
+
 },
+
 "H6": {
+
 "name": "Expert Elite Personas",
+
 "keyword": "/elite-forge",
+
 "links": [
+
 "gss1147/Royal_Ghost_Coder_500k",
+
 "gss1147/Elite_GOD_Coder_100k",
+
 "gss1147/Omega_Genesis_Coder_100k",
+
 "gss1147/python_GOD_coder",
+
 "IIGroup/X-Coder-RL-40k",
+
 "Appolon26/Real-Game-Design-Documents-With-AI-Generated-Code-Pairs"
+
 ],
+
 "persona": "Ultra-specialized 'Expert' datasets for scaling agentic programming roles."
+
 }
+
 },
+
 "priority": 10,
+
 "health_check": "/status/code-datasets"
+
 },
+
 "A": { "cluster": "Core Architecture", "nodes": { "A1-A6": "..." } },
+
 "L": { "cluster": "Language Specialists", "nodes": { "L1-L8": "..." } },
+
 "I": { "cluster": "Infra & Cloud", "nodes": { "I1-I5": "..." } },
+
 "O": { "cluster": "Operations", "nodes": { "O1-O5": "..." } },
+
 "D": { "cluster": "Data & AI", "nodes": { "D1-D6": "..." } },
+
 "Q": { "cluster": "Quality & Security", "nodes": { "Q1-Q8": "..." } },
+
 "U": { "cluster": "Utility", "nodes": { "U1-U7": "..." } }
+
 },
+
 "sequential_execution_logic": {
+
 "workflow_rules": [
+
 {
+
 "trigger": "AGENT_LOGIC_UPGRADE",
+
 "chain": [ "H3", "H2", "Q3", "H6", "U2" ],
+
 "description": "Synthetic Thinking -> Algorithmic Benchmarking -> Code Review -> Elite Persona Mapping -> Prompt Engineering"
+
 },
+
 {
+
 "trigger": "DEBUG_TRAINING_LOOP",
+
 "chain": [ "H5", "Q4", "L1", "O1", "U4" ],
+
 "description": "Trace/Error Analysis -> Debugger -> Python Refinement -> Troubleshooter -> Documentation"
+
 }
+
 ],
+
 "conditional_logic": {
+
 "IF_PURE_CODE_INGESTION": {
+
 "action": "Route via H1 (Archives) -> D4 (Data Eng) -> Q3 (Reviewer)",
+
 "nodes": [ "H1", "D4", "Q3" ]
+
 }
+
 }
+
 },
+
 "version": "3.1.0-CODE_ONLY"
+
 }
