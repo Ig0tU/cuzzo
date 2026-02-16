@@ -551,7 +551,6 @@
             "operations",
             "incident_response",
             "reliability"
-
           ],
           "enhancements": {
             "focus": [
@@ -1906,7 +1905,6 @@
       },
       "IF_USER_FACING": {
         "action": "Trigger nodes U5 (DX Optimizer) + S2a (UX Architect)",
-
         "nodes": [
           "U5",
           "S2a"
@@ -2447,7 +2445,6 @@
                   "data_model",
                   "analytics_plan",
                   "insight_summary"
-
                 ],
                 "quality_checks": [
                   "completeness",
@@ -2944,7 +2941,6 @@
                 "acquisition",
                 "lifecycle",
                 "sales_enablement"
-
               ],
               "enhancements": {
                 "focus": [
