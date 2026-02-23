@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 import os
+import sys
 import json
 import cgi
 import zipfile
@@ -355,8 +356,9 @@ def run_websocket_server():
 if __name__ == "__main__":
     # Install required package
     try:
-        import pip
-        pip.main(['install', 'simple-websocket-server'])
+        # Install SimpleWebSocketServer which provides the SimpleWebSocketServer module
+        # Note: 'simple-websocket-server' is a different package that provides 'simple_websocket_server'
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'SimpleWebSocketServer'])
     except Exception as e:
         print(f"Error installing package: {str(e)}")
 
